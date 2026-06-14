@@ -4,6 +4,10 @@ from pathlib import Path
 
 from app.config import settings
 
+# Absolute path to models dir — works regardless of working directory
+_BASE_DIR = Path(__file__).resolve().parent.parent.parent  # backend/
+_MODELS_DIR = _BASE_DIR / "data" / "models"
+
 _binding_model = None
 _admet_models: dict = {}
 
@@ -13,14 +17,14 @@ ADMET_PROPERTIES = ["absorption", "distribution", "metabolism", "excretion", "to
 def _load_binding_model():
     global _binding_model
     if _binding_model is None:
-        path = Path(settings.MODEL_DIR) / "binding_affinity_rf.pkl"
+        path = _MODELS_DIR / "binding_affinity_rf.pkl"
         _binding_model = joblib.load(path)
     return _binding_model
 
 
 def _load_admet_model(prop: str):
     if prop not in _admet_models:
-        path = Path(settings.MODEL_DIR) / f"admet_{prop}.pkl"
+        path = _MODELS_DIR / f"admet_{prop}.pkl"
         _admet_models[prop] = joblib.load(path)
     return _admet_models[prop]
 
