@@ -33,3 +33,16 @@ cd backend
 pip install -r requirements.txt
 cp .env.example .env  # add your Groq API key
 uvicorn app.main:app --reload
+```
+
+## Snapshots
+
+Molecular Analysis
+<img width="1600" height="760" alt="image" src="https://github.com/user-attachments/assets/74a476e1-3d46-469d-8cad-e0e1786488d2" />
+
+Synthesis Engine
+<img width="1600" height="757" alt="image" src="https://github.com/user-attachments/assets/0f6d6078-4005-471a-baab-92386e65853e" />
+
+How our VS code extension looks
+<img width="1600" height="862" alt="image" src="https://github.com/user-attachments/assets/a2c3e896-f805-4f07-9ea9-8eac85049882" />
+
