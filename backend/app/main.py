@@ -3,7 +3,7 @@ from starlette.datastructures import MutableHeaders
 from starlette.responses import Response as StarletteResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from app.routers import molecules, predictions, analyze, targets, structure, synthesis, repurposing, explain, batch
+from app.routers import molecules, predictions, analyze, targets, structure, synthesis, repurposing, explain, batch, polypharmacy
 
 # ── Raw ASGI CORS wrapper ─────────────────────────────────────────────────────
 # Injected at the outermost layer so headers are present on ALL responses,
@@ -62,6 +62,7 @@ _app.include_router(synthesis.router, prefix="/api/v1")
 _app.include_router(repurposing.router, prefix="/api/v1")
 _app.include_router(explain.router, prefix="/api/v1")
 _app.include_router(batch.router, prefix="/api/v1")
+_app.include_router(polypharmacy.router, prefix="/api/v1")
 
 # Wrap with bulletproof CORS — must be last so it is outermost
 app = BulletproofCORS(_app)
