@@ -28,6 +28,9 @@ def _generate_training_data():
 
     for smiles in SEED_SMILES:
         mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            print(f"Skipping invalid SMILES: {smiles[:40]}...")
+            continue
         feat = compute_features(mol)
         fv = np.array(feat["feature_vector"], dtype=np.float32)
         desc = feat["descriptors"]
