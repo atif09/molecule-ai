@@ -17,6 +17,7 @@ import AnalyzerDashboard from './pages/AnalyzerDashboard';
 import AnalyzerDashboardDesktop from './pages/AnalyzerDashboardDesktop';
 import MainAnalyzer from './pages/MainAnalyzer';
 import MoleculeComparator from './pages/MoleculeComparator';
+import PolypharmacyPage from './pages/PolypharmacyPage';
 
 import { API_BASE as API_BASE_URL } from './config';
 import { exportReport } from './utils/exportReport';
@@ -458,6 +459,7 @@ const App = () => {
         />
         <Route path="/analytics" element={<AnalyzerDashboard onOpenHistory={() => setSidebarOpen(true)} />} />
         <Route path="/compare" element={<MoleculeComparator onOpenHistory={() => setSidebarOpen(true)} />} />
+        <Route path="/polypharmacy" element={<PolypharmacyPage onOpenHistory={() => setSidebarOpen(true)} />} />
         <Route path="/synthesis" element={<SynthesisPage onOpenHistory={() => setSidebarOpen(true)} />} />
       </Routes>
     </div>
