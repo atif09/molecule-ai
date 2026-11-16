@@ -1,5 +1,5 @@
-from typing import Literal
-from pydantic import BaseModel
+from typing import Annotated, Literal, Optional
+from pydantic import BaseModel, Field, StringConstraints
 
 
 class MoleculeParseRequest(BaseModel):
@@ -86,4 +86,137 @@ class RepurposingResponse(BaseModel):
     mode: str = "repurposing"
     results: list[RepurposingTargetResult]
     best_target: RepurposingTargetResult
+    processing_time_ms: float
+
+
+# ── Polypharmacy ──────────────────────────────────────────────────────────────
+
+class PolypharmacyRequest(BaseModel):
+    medications: list[Annotated[str, StringConstraints(min_length=1, max_length=100)]] = Field(min_length=1, max_length=30)
+    age: Optional[int] = Field(default=None, ge=0, le=120)
+
+
+class PolyKbCoverage(BaseModel):
+    known: int
+    total: int
+
+
+class PolyRegimen(BaseModel):
+    requested: int
+    resolved: int
+    polypharmacy_level: str
+    kb_coverage: PolyKbCoverage
+
+
+class PolyUnresolved(BaseModel):
+    input: str
+    reason: str
+
+
+class PolyDescriptors(BaseModel):
+    LogP: float
+    TPSA: float
+
+
+class PolyBoiledEgg(BaseModel):
+    tpsa: float
+    logp: float
+    zone: str
+
+
+class PolyAdmetCell(BaseModel):
+    model_config = {"populate_by_name": True}
+    pass_: bool = Field(alias="pass")
+    label: str
+
+
+class PolyAdmet(BaseModel):
+    overall_admet_score: float
+    absorption: PolyAdmetCell
+    distribution: PolyAdmetCell
+    metabolism: PolyAdmetCell
+    excretion: PolyAdmetCell
+    toxicity: PolyAdmetCell
+
+
+class PolyMedication(BaseModel):
+    index: int
+    input: str
+    name: str
+    canonical_smiles: str
+    molecular_weight: float
+    in_kb: bool
+    drug_class: Optional[str] = None
+    narrow_therapeutic_index: bool
+    beers_flag: Optional[str] = None
+    descriptors: PolyDescriptors
+    boiled_egg: PolyBoiledEgg
+    admet: PolyAdmet
+
+
+class PolyInteraction(BaseModel):
+    id: str
+    type: str
+    severity: str
+    evidence: str
+    drugs: list[int]
+    drug_names: list[str]
+    title: str
+    mechanism: str
+    consequence: str
+    action: str
+
+
+class PolyMatrix(BaseModel):
+    size: int
+    cells: list[list[Optional[str]]]
+
+
+class PolyContributor(BaseModel):
+    drug_index: int
+    drug: str
+    tag: str
+    weight: float
+
+
+class PolyBodySystem(BaseModel):
+    system: str
+    label: str
+    score: int
+    contributors: list[PolyContributor]
+
+
+class PolyBoiledEggSummary(BaseModel):
+    bbb: int
+    hia: int
+    outside: int
+
+
+class PolyCounts(BaseModel):
+    major: int
+    moderate: int
+    minor: int
+
+
+class PolyOverall(BaseModel):
+    safety_score: int
+    level: str
+    label: str
+    counts: PolyCounts
+    summary: str
+    top_actions: list[str]
+
+
+class PolypharmacyResponse(BaseModel):
+    age: Optional[int] = None
+    age_assumed: bool
+    regimen: PolyRegimen
+    unresolved: list[PolyUnresolved]
+    medications: list[PolyMedication]
+    interactions: list[PolyInteraction]
+    matrix: PolyMatrix
+    body_burden: list[PolyBodySystem]
+    boiled_egg_summary: PolyBoiledEggSummary
+    overall: PolyOverall
+    disclaimer: str
     processing_time_ms: float
